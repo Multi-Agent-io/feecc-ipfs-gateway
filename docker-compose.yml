@@ -1,0 +1,29 @@
+version: "3.7"
+services:
+  feecc-ipfs-gateway:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "0.0.0.0:8082:8082"
+    restart: always
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "~/.cache/pip/:/root/.cache/pip"
+    links:
+      - ipfsnode
+    environment:
+      MONGODB_URI: ''  # Your MongoDB connection URI ending with /db-name
+      PRODUCTION_ENVIRONMENT: null  # Leave null if you want testing credentials to work
+      LOCAL_IPFS_ENABLED: true  # Your MongoDB connection URI ending with /db-name
+      PINATA_ENABLED: true  # Whether to upload files to Pinata.cloud or not
+      PINATA_API: ''  # Pinata.cloud credentials. Leave empty if you don't need it
+      PINATA_SECRET_API: ''  # Pinata.cloud credentials. Leave empty if you don't need it
+      PY_IPFS_HTTP_CLIENT_DEFAULT_ADDR: '/dns/ipfsnode/tcp/5001/http'  # Node address, don't change
+
+  ipfsnode:
+    image: ipfs/go-ipfs:v0.8.0
+    volumes:
+      - ~/ipfs/ipfs_staging:/export
+      - ~/ipfs/ipfs_data:/data/ipfs
