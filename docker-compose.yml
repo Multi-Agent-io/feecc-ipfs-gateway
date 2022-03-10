@@ -16,10 +16,13 @@ services:
     environment:
       MONGODB_URI: ''  # Your MongoDB connection URI ending with /db-name
       PRODUCTION_ENVIRONMENT: null  # Leave null if you want testing credentials to work
-      LOCAL_IPFS_ENABLED: true  # Your MongoDB connection URI ending with /db-name
+      LOCAL_IPFS_ENABLED: true  # Whether to enable local IPFS node publishing or not.
       PINATA_ENABLED: true  # Whether to upload files to Pinata.cloud or not
       PINATA_API: ''  # Pinata.cloud credentials. Leave empty if you don't need it
       PINATA_SECRET_API: ''  # Pinata.cloud credentials. Leave empty if you don't need it
+      ROBONOMICS_ENABLE_DATALOG: false  # Whether to post CIDs to Robonomics network datalog or not
+      ROBONOMICS_ACCOUNT_ADDRESS: ''  # Account address in Robonomics network
+      ROBONOMICS_ACCOUNT_SEED: ''  # Robonomics network account seed
       PY_IPFS_HTTP_CLIENT_DEFAULT_ADDR: '/dns/ipfsnode/tcp/5001/http'  # Node address, don't change
 
   ipfsnode:
