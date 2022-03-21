@@ -20,7 +20,7 @@ services:
       PINATA_ENABLED: true  # Whether to upload files to Pinata.cloud or not
       PINATA_API: ''  # Pinata.cloud credentials. Leave empty if you don't need it
       PINATA_SECRET_API: ''  # Pinata.cloud credentials. Leave empty if you don't need it
-      ROBONOMICS_ENABLE_DATALOG: false  # Whether to post CIDs to Robonomics network datalog or not
+      ROBONOMICS_ENABLE_DATALOG: null  # Whether to post CIDs to Robonomics network datalog or not
       ROBONOMICS_ACCOUNT_SEED: ''  # Robonomics network account seed
       ROBONOMICS_SUBSTRATE_NODE_URL: ''  # Robonomics node URL in case you want to use non-default node
       PY_IPFS_HTTP_CLIENT_DEFAULT_ADDR: '/dns/ipfsnode/tcp/5001/http'  # Node address, don't change
