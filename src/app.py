@@ -5,7 +5,7 @@ import os
 import typing as tp
 from pathlib import Path
 
-from fastapi import Depends, FastAPI, File, UploadFile, status
+from fastapi import BackgroundTasks, Depends, FastAPI, File, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 
@@ -13,10 +13,12 @@ from auth.dependencies import authenticate
 from io_gateway import ipfs, pinata
 from io_gateway.dependencies import get_file
 from io_gateway.models import GenericResponse, IpfsPublishResponse
+from io_gateway.robonomics import post_to_datalog
 from logging_config import CONSOLE_LOGGING_CONFIG, FILE_LOGGING_CONFIG
 
 LOCAL_IPFS_ENABLED: bool = bool(os.getenv("LOCAL_IPFS_ENABLED", False))
 PINATA_ENABLED: bool = bool(os.getenv("PINATA_ENABLED", False))
+DATALOG_ENABLED: bool = bool(os.getenv("ROBONOMICS_ENABLE_DATALOG", False))
 
 assert LOCAL_IPFS_ENABLED or PINATA_ENABLED, "At least one of the options must be enabled"
 
@@ -42,14 +44,16 @@ app.add_middleware(
 
 
 @app.post("/publish-to-ipfs/by-path", response_model=tp.Union[IpfsPublishResponse, GenericResponse])  # type: ignore
-async def publish_file_by_path(file: Path = Depends(get_file)) -> tp.Union[IpfsPublishResponse, GenericResponse]:
+async def publish_file_by_path(
+    background_tasks: BackgroundTasks, file: Path = Depends(get_file)
+) -> tp.Union[IpfsPublishResponse, GenericResponse]:
     """
     Publish file to IPFS using local node (if enabled by config) and / or pin to Pinata pinning cloud (if enabled by config).
 
     File is accepted as an absolute path to the desired file on the host machine
     """
     try:
-        cid, uri = await publish_file(file)
+        cid, uri = await publish_file(file, background_tasks)
         message = f"File {file.name} published"
         logger.info(message)
         return IpfsPublishResponse(status=status.HTTP_200_OK, details=message, ipfs_cid=cid, ipfs_link=uri)
@@ -61,7 +65,9 @@ async def publish_file_by_path(file: Path = Depends(get_file)) -> tp.Union[IpfsP
 
 
 @app.post("/publish-to-ipfs/upload-file", response_model=tp.Union[IpfsPublishResponse, GenericResponse])  # type: ignore
-async def publish_file_as_upload(file_data: UploadFile = File(...)) -> tp.Union[IpfsPublishResponse, GenericResponse]:
+async def publish_file_as_upload(
+    background_tasks: BackgroundTasks, file_data: UploadFile = File(...)
+) -> tp.Union[IpfsPublishResponse, GenericResponse]:
     """
     Publish file to IPFS using local node (if enabled by config) and / or pin to Pinata pinning cloud (if enabled by config).
 
@@ -77,7 +83,7 @@ async def publish_file_as_upload(file_data: UploadFile = File(...)) -> tp.Union[
         with open(path, "wb") as f:
             f.write(file_data.file.read())
 
-        cid, uri = await publish_file(Path(path))
+        cid, uri = await publish_file(Path(path), background_tasks)
         message = f"File {file_data.filename} published"
         logger.info(message)
         return IpfsPublishResponse(status=status.HTTP_200_OK, details=message, ipfs_cid=cid, ipfs_link=uri)
@@ -88,7 +94,9 @@ async def publish_file_as_upload(file_data: UploadFile = File(...)) -> tp.Union[
         return GenericResponse(status=status.HTTP_500_INTERNAL_SERVER_ERROR, details=message)
 
 
-async def publish_file(file: tp.Union[os.PathLike[tp.AnyStr], tp.IO[bytes]]) -> tp.Tuple[str, str]:
+async def publish_file(
+    file: tp.Union[os.PathLike[tp.AnyStr], tp.IO[bytes]], background_tasks: BackgroundTasks
+) -> tp.Tuple[str, str]:
     if LOCAL_IPFS_ENABLED and PINATA_ENABLED:
         cid, uri = ipfs.publish_to_ipfs(file)
         asyncio.create_task(pinata.pin_file(file))
@@ -98,5 +106,9 @@ async def publish_file(file: tp.Union[os.PathLike[tp.AnyStr], tp.IO[bytes]]) -> 
         cid, uri = await pinata.pin_file(file)
     else:
         raise ValueError("Both IPFS and Pinata are disabled in config, cannot get CID")
+
+    if DATALOG_ENABLED:
+        background_tasks.add_task(post_to_datalog, cid)
+        logger.info(f"CID {cid} will be posted to Robonomics datalog in the background.")
 
     return cid, uri
