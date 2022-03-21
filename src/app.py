@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import asyncio
 import os
 import typing as tp
 from pathlib import Path
@@ -99,7 +98,7 @@ async def publish_file(
 ) -> tp.Tuple[str, str]:
     if LOCAL_IPFS_ENABLED and PINATA_ENABLED:
         cid, uri = ipfs.publish_to_ipfs(file)
-        asyncio.create_task(pinata.pin_file(file))
+        background_tasks.add_task(pinata.pin_file, file)
     elif LOCAL_IPFS_ENABLED:
         cid, uri = ipfs.publish_to_ipfs(file)
     elif PINATA_ENABLED:
