@@ -1,6 +1,6 @@
 from typing import Any
 from fastapi import Depends, HTTPException
-from auth.dependencies import AUTHENTICATION_MODE, authenticate_analytics, authenticate_noauth, authenticate_workbench
+from auth.dependencies import AUTHENTICATION_MODE, authenticate_analytics, authenticate_workbench
 
 
 def load_auth_mode() -> list[Any] | None:

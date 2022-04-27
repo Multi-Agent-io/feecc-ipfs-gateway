@@ -1,6 +1,6 @@
 import os
 
-from fastapi import Depends, HTTPException, Header, status
+from fastapi import HTTPException, Header, status
 from loguru import logger
 
 from .database import MongoDbWrapper
@@ -21,9 +21,12 @@ async def authenticate_workbench(rfid_card_id: str = Header(TESTING_VALUE_WORKBE
         return employee
 
     except Exception as e:
-        error = f"An error occured: {e}"
-        logger.error(error)
-        raise HTTPException(status_code=403, detail=error)
+        message = f"Authentication failed: {e}"
+        logger.error(message)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=message,
+        )
 
 
 async def authenticate_analytics(username: str = Header(TESTING_VALUE_ANALYTICS)) -> AnalyticsUser:
@@ -35,10 +38,9 @@ async def authenticate_analytics(username: str = Header(TESTING_VALUE_ANALYTICS)
         return user
 
     except Exception as e:
-        error = f"An error occured: {e}"
-        logger.error(error)
-        raise HTTPException(status_code=403, detail=error)
-
-
-async def authenticate_noauth() -> None:
-    return None
+        message = f"Authentication failed: {e}"
+        logger.error(message)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=message,
+        )
