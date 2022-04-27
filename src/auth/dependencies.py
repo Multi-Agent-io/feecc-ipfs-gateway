@@ -21,8 +21,9 @@ async def authenticate_workbench(rfid_card_id: str = Header(TESTING_VALUE_WORKBE
         return employee
 
     except Exception as e:
-        logger.error(e)
-        raise HTTPException(status_code=403, detail=e)
+        error = f"An error occured: {e}"
+        logger.error(error)
+        raise HTTPException(status_code=403, detail=error)
 
 
 async def authenticate_analytics(username: str = Header(TESTING_VALUE_ANALYTICS)) -> AnalyticsUser:
@@ -34,8 +35,9 @@ async def authenticate_analytics(username: str = Header(TESTING_VALUE_ANALYTICS)
         return user
 
     except Exception as e:
-        logger.error(e)
-        raise HTTPException(status_code=403, detail=e)
+        error = f"An error occured: {e}"
+        logger.error(error)
+        raise HTTPException(status_code=403, detail=error)
 
 
 async def authenticate_noauth() -> None:

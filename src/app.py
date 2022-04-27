@@ -28,7 +28,7 @@ logger.configure(handlers=[CONSOLE_LOGGING_CONFIG, FILE_LOGGING_CONFIG])
 app = FastAPI(
     title="Feecc IPFS gateway",
     description="A simple IPFS gateway for Feecc QA system",
-    dependencies=[load_auth_mode()],
+    dependencies=load_auth_mode(),
 )
 
 
