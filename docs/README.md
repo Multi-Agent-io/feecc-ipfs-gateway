@@ -52,3 +52,4 @@ To configure your IPFS Gateway deployment edit the environment variables, provid
 - `ROBONOMICS_ENABLE_DATALOG`- Whether to post CIDs to Robonomics network datalog or not. Defaults to `false`.
 - `ROBONOMICS_SUBSTRATE_NODE_URL` - Robonomics node URL in case you want to use a non-default node.
 - `ROBONOMICS_ACCOUNT_SEED`- Robonomics network account seed. Leave empty if you don't need it.
+- `AUTH_MODE`- Authentication mode. Available options are "analytics" (auth by analytics login), "workbench" (auth by card id) and "noauth" (auth w/o credentials).
