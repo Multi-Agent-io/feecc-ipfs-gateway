@@ -1,5 +1,5 @@
 from typing import Any
-from fastapi import Depends, HTTPException
+from fastapi import Depends
 from auth.dependencies import AUTHENTICATION_MODE, authenticate_analytics, authenticate_workbench
 
 
@@ -12,5 +12,5 @@ def load_auth_mode() -> list[Any] | None:
         case "analytics":
             AUTH_DEPENDENCY = [Depends(authenticate_analytics)]
         case _:
-            raise HTTPException(status_code=500, detail=f"Unknown authentication mode: {AUTHENTICATION_MODE}")
+            raise ValueError(f"Unknown authentication mode: {AUTHENTICATION_MODE}")
     return AUTH_DEPENDENCY
