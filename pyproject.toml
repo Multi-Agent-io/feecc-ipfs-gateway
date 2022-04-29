@@ -20,7 +20,7 @@ python-multipart = "^0.0.5"
 robonomics-interface = "^0.6.5"
 
 [tool.poetry.dev-dependencies]
-mypy = "^0.931"
+mypy = "^0.950"
 black = "^22.1.0"
 flake8 = "^4.0.1"
 pytest = "^7.0.1"

@@ -24,6 +24,7 @@ services:
       ROBONOMICS_ACCOUNT_SEED: ''  # Robonomics network account seed
       ROBONOMICS_SUBSTRATE_NODE_URL: ''  # Robonomics node URL in case you want to use non-default node
       PY_IPFS_HTTP_CLIENT_DEFAULT_ADDR: '/dns/ipfsnode/tcp/5001/http'  # Node address, don't change
+      AUTH_MODE: "workbench" # Auth mode. Available options are "analytics", "workbench" and "noauth"
 
   ipfsnode:
     image: ipfs/go-ipfs:v0.8.0
