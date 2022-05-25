@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 from typed_getenv import getenv
 
-from auth.dependencies import authenticate
+from auth.utils import load_auth_mode
 from io_gateway import ipfs, pinata
 from io_gateway.dependencies import get_file
 from io_gateway.models import GenericResponse, IpfsPublishResponse
@@ -29,7 +29,7 @@ logger.configure(handlers=[CONSOLE_LOGGING_CONFIG, FILE_LOGGING_CONFIG])
 app = FastAPI(
     title="Feecc IPFS gateway",
     description="A simple IPFS gateway for Feecc QA system",
-    dependencies=[Depends(authenticate)],
+    dependencies=load_auth_mode(),
 )
 
 

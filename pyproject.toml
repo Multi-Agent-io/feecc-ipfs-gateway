@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "feecc-ipfs-gateway"
-version = "1.0.1"
+version = "1.1.0"
 description = "A simple IPFS gateway for Feecc QA system"
 authors = ["arseniiarsenii <arseniivelichko2@gmail.com>"]
 license = "Apache-2.0"
@@ -21,7 +21,7 @@ robonomics-interface = "^0.6.5"
 typed-getenv = "^0.1.2"
 
 [tool.poetry.dev-dependencies]
-mypy = "^0.931"
+mypy = "^0.950"
 black = "^22.1.0"
 flake8 = "^4.0.1"
 pytest = "^7.0.1"
