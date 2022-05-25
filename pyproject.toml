@@ -17,7 +17,7 @@ httpx = "^0.22.0"
 ipfshttpclient = "^0.8.0a2"
 Pillow = "^9.0.1"
 python-multipart = "^0.0.5"
-robonomics-interface = "^0.6.5"
+robonomics-interface = "^1.0.3"
 typed-getenv = "^0.1.2"
 
 [tool.poetry.dev-dependencies]
