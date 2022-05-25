@@ -1,6 +1,11 @@
 from typing import Any
+
 from fastapi import Depends
-from auth.dependencies import AUTHENTICATION_MODE, authenticate_analytics, authenticate_workbench
+from typed_getenv import getenv
+
+from auth.dependencies import authenticate_analytics, authenticate_workbench
+
+AUTHENTICATION_MODE: str = getenv("AUTH_MODE", var_type=str)
 
 
 def load_auth_mode() -> list[Any] | None:
