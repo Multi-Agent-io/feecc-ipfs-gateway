@@ -7,6 +7,7 @@ from pathlib import Path
 from fastapi import BackgroundTasks, Depends, FastAPI, File, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
+from typed_getenv import getenv
 
 from auth.dependencies import authenticate
 from io_gateway import ipfs, pinata
@@ -15,9 +16,9 @@ from io_gateway.models import GenericResponse, IpfsPublishResponse
 from io_gateway.robonomics import post_to_datalog
 from logging_config import CONSOLE_LOGGING_CONFIG, FILE_LOGGING_CONFIG
 
-LOCAL_IPFS_ENABLED: bool = bool(os.getenv("LOCAL_IPFS_ENABLED", False))
-PINATA_ENABLED: bool = bool(os.getenv("PINATA_ENABLED", False))
-DATALOG_ENABLED: bool = bool(os.getenv("ROBONOMICS_ENABLE_DATALOG", False))
+LOCAL_IPFS_ENABLED: bool = getenv("LOCAL_IPFS_ENABLED", var_type=bool, default=False, optional=True)
+PINATA_ENABLED: bool = getenv("PINATA_ENABLED", var_type=bool, default=False, optional=True)
+DATALOG_ENABLED: bool = getenv("ROBONOMICS_ENABLE_DATALOG", var_type=bool, default=False, optional=True)
 
 assert LOCAL_IPFS_ENABLED or PINATA_ENABLED, "At least one of the options must be enabled"
 

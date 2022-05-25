@@ -6,12 +6,15 @@ from time import time
 
 import httpx
 from loguru import logger
+from typed_getenv import getenv
 
-IPFS_GATEWAY_ADDRESS: str = os.getenv("IPFS_GATEWAY_ADDRESS", "https://gateway.ipfs.io/ipfs/")
-PINATA_ENABLED: bool = bool(os.getenv("PINATA_ENABLED", False))
+IPFS_GATEWAY_ADDRESS: str = getenv(
+    "IPFS_GATEWAY_ADDRESS", default="https://gateway.ipfs.io/ipfs/", optional=True, var_type=str
+)
+PINATA_ENABLED: bool = getenv("PINATA_ENABLED", default=False, var_type=bool, optional=True)
 PINATA_ENDPOINT: str = "https://api.pinata.cloud"
-PINATA_API: str = os.getenv("PINATA_API", "")
-PINATA_SECRET_API: str = os.getenv("PINATA_SECRET_API", "")
+PINATA_API: str = getenv("PINATA_API", var_type=str, default="", optional=True)
+PINATA_SECRET_API: str = getenv("PINATA_SECRET_API", default="", var_type=str, optional=True)
 AUTH_HEADERS = {"pinata_api_key": PINATA_API, "pinata_secret_api_key": PINATA_SECRET_API}
 
 if PINATA_ENABLED:
