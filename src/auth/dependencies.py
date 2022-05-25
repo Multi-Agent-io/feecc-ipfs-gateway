@@ -1,13 +1,11 @@
-import os
-
 from fastapi import HTTPException, Header, status
 from loguru import logger
+from typed_getenv import getenv
 
 from .database import MongoDbWrapper
 from .models import Employee, AnalyticsUser
 
-AUTHENTICATION_MODE: str = os.getenv("AUTH_MODE", "")
-PRODUCTION_ENVIRONMENT: bool = bool(os.getenv("PRODUCTION_ENVIRONMENT", False))
+PRODUCTION_ENVIRONMENT: bool = getenv("PRODUCTION_ENVIRONMENT", var_type=bool, optional=True, default=False)
 TESTING_VALUE_WORKBENCH: str = "1111111111"
 TESTING_VALUE_ANALYTICS: str = "fake"
 

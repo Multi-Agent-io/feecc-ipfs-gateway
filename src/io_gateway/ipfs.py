@@ -6,10 +6,12 @@ from time import sleep
 
 import ipfshttpclient
 from loguru import logger
+from typed_getenv import getenv
 
-
-LOCAL_IPFS_ENABLED: bool = bool(os.getenv("LOCAL_IPFS_ENABLED", False))
-IPFS_GATEWAY_ADDRESS: str = os.getenv("IPFS_GATEWAY_ADDRESS", "https://gateway.ipfs.io/ipfs/")
+LOCAL_IPFS_ENABLED: bool = getenv("LOCAL_IPFS_ENABLED", var_type=bool, default=False, optional=True)
+IPFS_GATEWAY_ADDRESS: str = getenv(
+    "IPFS_GATEWAY_ADDRESS", var_type=str, default="https://gateway.ipfs.io/ipfs/", optional=True
+)
 
 
 @logger.catch(reraise=True)
