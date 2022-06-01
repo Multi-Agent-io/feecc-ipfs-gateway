@@ -13,6 +13,8 @@ services:
       - "~/.cache/pip/:/root/.cache/pip"
     links:
       - ipfsnode
+    depends_on:
+      - ipfsnode
     environment:
       MONGODB_URI: ''  # Your MongoDB connection URI ending with /db-name
       PRODUCTION_ENVIRONMENT: no  # Leave "no" if you want testing credentials to work
