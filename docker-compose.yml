@@ -27,7 +27,7 @@ services:
       AUTH_MODE: "workbench" # Auth mode. Available options are "analytics", "workbench" and "noauth"
 
   ipfsnode:
-    image: ipfs/go-ipfs:v0.8.0
+    image: ipfs/go-ipfs:master-latest
     restart: always
     volumes:
       - ~/ipfs/ipfs_staging:/export
