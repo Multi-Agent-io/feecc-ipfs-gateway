@@ -13,6 +13,9 @@ services:
       - "~/.cache/pip/:/root/.cache/pip"
     links:
       - ipfsnode
+    depends_on:
+      ipfsnode:
+        condition: service_healthy
     environment:
       MONGODB_URI: ''  # Your MongoDB connection URI ending with /db-name
       PRODUCTION_ENVIRONMENT: no  # Leave "no" if you want testing credentials to work
@@ -27,8 +30,10 @@ services:
       AUTH_MODE: "workbench" # Auth mode. Available options are "analytics", "workbench" and "noauth"
 
   ipfsnode:
-    image: ipfs/go-ipfs:v0.8.0
+    image: ipfs/go-ipfs:master-latest
     restart: always
     volumes:
       - ~/ipfs/ipfs_staging:/export
       - ~/ipfs/ipfs_data:/data/ipfs
+    healthcheck:
+      interval: 5s

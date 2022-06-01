@@ -4,7 +4,7 @@ import os
 import typing as tp
 from time import sleep
 
-import ipfshttpclient
+import ipfshttpclient2 as ipfshttpclient
 from loguru import logger
 from typed_getenv import getenv
 
