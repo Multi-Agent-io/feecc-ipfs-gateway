@@ -14,7 +14,8 @@ services:
     links:
       - ipfsnode
     depends_on:
-      - ipfsnode
+      ipfsnode:
+        condition: service_healthy
     environment:
       MONGODB_URI: ''  # Your MongoDB connection URI ending with /db-name
       PRODUCTION_ENVIRONMENT: no  # Leave "no" if you want testing credentials to work
@@ -34,3 +35,5 @@ services:
     volumes:
       - ~/ipfs/ipfs_staging:/export
       - ~/ipfs/ipfs_data:/data/ipfs
+    healthcheck:
+      interval: 5s
