@@ -23,14 +23,18 @@ else:
     logger.warning("Pinata capabilities are disabled")
 
 
-@logger.catch(reraise=True)
 async def pin_file(file: tp.Union[os.PathLike[tp.AnyStr], tp.IO[bytes]]) -> tp.Tuple[str, str]:
     logger.info("Pushing file to Pinata")
     t0 = time()
 
     files = {"file": open(file, "rb") if isinstance(file, os.PathLike) else file}
     async with httpx.AsyncClient(base_url=PINATA_ENDPOINT, timeout=600.0) as client:
-        response = await client.post("/pinning/pinFileToIPFS", files=files, headers=AUTH_HEADERS)
+        try:
+            response = await client.post("/pinning/pinFileToIPFS", files=files, headers=AUTH_HEADERS)
+        except httpx.ConnectError as e:
+            msg = f"Connection to Pinata failed: {e}. Check if the service is available at https://pinata.statuspage.io/"
+            logger.error(msg)
+            raise httpx.ConnectError(msg) from e
 
     data = response.json()
     ipfs_hash: str = data["IpfsHash"]
