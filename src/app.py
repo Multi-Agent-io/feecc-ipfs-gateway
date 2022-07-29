@@ -4,7 +4,7 @@ import os
 import typing as tp
 from pathlib import Path
 
-from fastapi import BackgroundTasks, Depends, FastAPI, File, UploadFile, status
+from fastapi import BackgroundTasks, Depends, FastAPI, File, UploadFile, status, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 from typed_getenv import getenv
@@ -43,10 +43,10 @@ app.add_middleware(
 )
 
 
-@app.post("/publish-to-ipfs/by-path", response_model=tp.Union[IpfsPublishResponse, GenericResponse])  # type: ignore
+@app.post("/publish-to-ipfs/by-path", response_model=IpfsPublishResponse)
 async def publish_file_by_path(
     background_tasks: BackgroundTasks, file: Path = Depends(get_file)
-) -> tp.Union[IpfsPublishResponse, GenericResponse]:
+) -> IpfsPublishResponse:
     """
     Publish file to IPFS using local node (if enabled by config) and / or pin to Pinata pinning cloud (if enabled by config).
 
@@ -61,13 +61,13 @@ async def publish_file_by_path(
     except Exception as e:
         message = f"An error occurred while publishing file to IPFS: {e}"
         logger.error(message)
-        return GenericResponse(status=status.HTTP_500_INTERNAL_SERVER_ERROR, details=message)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from e
 
 
-@app.post("/publish-to-ipfs/upload-file", response_model=tp.Union[IpfsPublishResponse, GenericResponse])  # type: ignore
+@app.post("/publish-to-ipfs/upload-file", response_model=IpfsPublishResponse)
 async def publish_file_as_upload(
     background_tasks: BackgroundTasks, file_data: UploadFile = File(...)
-) -> tp.Union[IpfsPublishResponse, GenericResponse]:
+) -> IpfsPublishResponse:
     """
     Publish file to IPFS using local node (if enabled by config) and / or pin to Pinata pinning cloud (if enabled by config).
 
@@ -91,7 +91,7 @@ async def publish_file_as_upload(
     except Exception as e:
         message = f"An error occurred while publishing file to IPFS: {e}"
         logger.error(message)
-        return GenericResponse(status=status.HTTP_500_INTERNAL_SERVER_ERROR, details=message)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=message) from e
 
 
 async def publish_file(
