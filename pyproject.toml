@@ -16,8 +16,7 @@ uvicorn = "^0.17.6"
 httpx = "^0.23.0"
 Pillow = "^9.2.0"
 python-multipart = "^0.0.5"
-robonomics-interface = "^1.1.0"
-typed-getenv = "^0.1.2"
+  typed-getenv = "^0.1.2"
 IPFS-Toolkit = "^0.3.5"
 
 [tool.poetry.dev-dependencies]
