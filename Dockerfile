@@ -29,6 +29,7 @@ RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 # Final container build. Uses pre-compiled dependencies and requirements.txt
 # obtained in the previous steps
 FROM python:3.10
+EXPOSE 8082
 WORKDIR /src
 COPY --from=requirements-stage /tmp/requirements.txt /src/requirements.txt
 COPY --from=dependency-compilation /root/.cache/pip /root/.cache/pip
