@@ -12,8 +12,7 @@ from typed_getenv import getenv
 from auth.utils import load_auth_mode
 from io_gateway import ipfs, pinata
 from io_gateway.dependencies import get_file
-from io_gateway.models import GenericResponse, IpfsPublishResponse
-from io_gateway.robonomics import post_to_datalog
+from io_gateway.models import IpfsPublishResponse
 from logging_config import CONSOLE_LOGGING_CONFIG, FILE_LOGGING_CONFIG
 
 LOCAL_IPFS_ENABLED: bool = getenv("LOCAL_IPFS_ENABLED", var_type=bool, default=False, optional=True)
@@ -106,9 +105,5 @@ async def publish_file(
         cid, uri = await pinata.pin_file(file)
     else:
         raise ValueError("Both IPFS and Pinata are disabled in config, cannot get CID")
-
-    if DATALOG_ENABLED:
-        background_tasks.add_task(post_to_datalog, cid)
-        logger.info(f"CID {cid} will be posted to Robonomics datalog in the background.")
 
     return cid, uri

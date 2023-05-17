@@ -8,16 +8,7 @@ from .Singleton import SingletonMeta
 from .models import Employee, AnalyticsUser
 
 MONGODB_URI: str = getenv("MONGODB_URI", var_type=str)
-
-
-def _get_database_name(db_uri: str) -> str:
-    """Get DB name in cluster from a MongoDB connection url"""
-    db_name: str = db_uri.split("/")[-1]
-
-    if "?" in db_name:
-        db_name = db_name.split("?")[0]
-
-    return db_name
+MONGO_DATABASE_NAME: str = getenv("MONGO_DATABASE_NAME", var_type=str)
 
 
 class MongoDbWrapper(metaclass=SingletonMeta):
@@ -27,7 +18,7 @@ class MongoDbWrapper(metaclass=SingletonMeta):
         """connect to database using credentials"""
         logger.info("Connecting to MongoDB")
         mongo_client: AsyncIOMotorClient = AsyncIOMotorClient(MONGODB_URI, serverSelectionTimeoutMS=5000)
-        db_name: str = _get_database_name(MONGODB_URI)
+        db_name: str = MONGO_DATABASE_NAME
         self._database = mongo_client[db_name]
         self._employee_collection: AsyncIOMotorCollection = self._database["employeeData"]
         self._analytics_users_collection: AsyncIOMotorCollection = self._database["analyticsCredentials"]
