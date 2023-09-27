@@ -1,20 +1,3 @@
-# There are no binaries of this packages as of today for ARM platforms,
-# so compilation is required
-FROM python:3.10 as dependency-compilation
-WORKDIR /tmp
-RUN apt-get update && apt-get install -y\
-    build-essential\
-    libssl-dev\
-    libffi-dev\
-    python3-dev
-RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
-RUN /root/.cargo/bin/rustup default nightly
-RUN pip install --upgrade pip
-RUN . /root/.cargo/env && pip install py-bip39-bindings
-RUN . /root/.cargo/env && pip install py-ed25519-bindings
-RUN . /root/.cargo/env && pip install py-sr25519-bindings
-RUN . /root/.cargo/env && pip install cryptography
-
 # At this stage we convert Poetry's dependency file into a more traditional
 # requirements.txt to avoid installing Poetry into the final container.
 # Although very slow, this cannot be skipped, as we need to resolve dependencies
