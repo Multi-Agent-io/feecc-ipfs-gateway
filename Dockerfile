@@ -4,7 +4,6 @@
 # for the exact platform the client is using.
 FROM python:3.10 as requirements-stage
 WORKDIR /tmp
-COPY --from=dependency-compilation /root/.cache/pip /root/.cache/pip
 RUN pip install poetry
 COPY ./pyproject.toml ./poetry.lock* /tmp/
 RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
@@ -15,7 +14,6 @@ FROM python:3.10
 EXPOSE 8082
 WORKDIR /src
 COPY --from=requirements-stage /tmp/requirements.txt /src/requirements.txt
-COPY --from=dependency-compilation /root/.cache/pip /root/.cache/pip
 RUN pip install --no-cache-dir --upgrade -r /src/requirements.txt
 COPY ./src /src
 HEALTHCHECK --interval=5s --timeout=3s --start-period=5s --retries=12 \
