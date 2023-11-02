@@ -13,14 +13,14 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
       - "~/.cache/pip/:/root/.cache/pip"
     environment:
-      LOCAL_IPFS_IS_CLUSTER_PEER: true # Weather LOCAL_IPFS_LIST for cluster-peer or node
       MONGODB_URI: "mongodb://<ip-address>:<port-number>/" # Line to connect to Mongo DB
+      MONGO_DATABASE_NAME: "" # collection name
+      LOCAL_IPFS_ENABLED: true  # Whether to enable local IPFS node publishing or not.      
+      LOCAL_IPFS_IS_CLUSTER_PEER: true # Weather LOCAL_IPFS_LIST for cluster-peer or node
       LOCAL_IPFS_LIST: "/ipv4/0.0.0.0/tcp/8888/http,/ipv4/1.1.1.1/tcp/8888/http"  # use your culster-peer OR node `ip` and `port`
       IPFS_GATEWAY_ADDRESS: "" # Default is: "https://gateway.ipfs.io/ipfs/"
-      MONGO_DATABASE_NAME: "" # collection name
-      PRODUCTION_ENVIRONMENT: false  # Leave "no" if you want testing credentials to work
-      LOCAL_IPFS_ENABLED: true  # Whether to enable local IPFS node publishing or not.      
       PINATA_ENABLED: false  # Whether to upload files to Pinata.cloud or not
       PINATA_API: ''  # Pinata.cloud credentials. Leave empty if you don't need it
       PINATA_SECRET_API: ''  # Pinata.cloud credentials. Leave empty if you don't need it
+      PRODUCTION_ENVIRONMENT: false  # Leave "no" if you want testing credentials to work
       AUTHENTICATE: false # Whether check authentication or not
