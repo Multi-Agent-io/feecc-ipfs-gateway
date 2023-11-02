@@ -83,6 +83,7 @@ async def publish_file_as_upload(
             f.write(file_data.file.read())
 
         cid, uri = await publish_file(Path(path), background_tasks)
+        os.remove(path)
         message = f"File {file_data.filename} published"
         logger.info(message)
         return IpfsPublishResponse(status=status.HTTP_200_OK, details=message, ipfs_cid=cid, ipfs_link=uri)

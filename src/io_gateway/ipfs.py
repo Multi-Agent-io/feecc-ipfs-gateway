@@ -49,15 +49,17 @@ def publish_to_ipfs(file: tp.Union[os.PathLike[tp.AnyStr], tp.IO[bytes]]) -> tp.
     logger.info("Publishing file to IPFS")
     ipfs_cluster_peer_sockets = set(a.split("/")[2]+":"+a.split("/")[4] for a in tuple(LOCAL_IPFS_LIST.split(",")))
     socket = None
+
     for s in ipfs_cluster_peer_sockets:
         if _check_connection_to_ipfs_cluster_peer(s):
             socket = s
             break
-    try:
-        assert socket != None
-    except AssertionError:
-        logger.error("It seems like there is no alive IPFS CLUSTER peer")
+
+    if socket == None:
+        raise ConnectionError("It seems like there is no alive IPFS CLUSTER peer")
+
     url = _build_url(LOCAL_IPFS_IS_CLUSTER_PEER, 'http', socket, '/add')
+
     with open(file, 'rb') as fout:
         files = {'upload_file': fout}
         result = requests.post(url, files=files).json()
