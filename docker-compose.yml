@@ -1,6 +1,7 @@
 version: "3.7"
 services:
   feecc-ipfs-gateway:
+    container_name: feecc_ipfs_gateway
     build:
       context: ./
       dockerfile: Dockerfile
@@ -11,27 +12,15 @@ services:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
       - "~/.cache/pip/:/root/.cache/pip"
-    links:
-      - ipfsnode
-    depends_on:
-      ipfsnode:
-        condition: service_healthy
     environment:
-      MONGODB_URI: ""
-      MONGO_DATABASE_NAME: ""
-      PRODUCTION_ENVIRONMENT: false  # Leave "no" if you want testing credentials to work
-      LOCAL_IPFS_ENABLED: true  # Whether to enable local IPFS node publishing or not.
-      PY_IPFS_HTTP_CLIENT_DEFAULT_ADDR: '/dns/ipfsnode/tcp/5001/http'  # Node address, don't change
-      PINATA_ENABLED: true  # Whether to upload files to Pinata.cloud or not
+      MONGODB_URI: "mongodb://<ip-address>:<port-number>/" # Line to connect to Mongo DB
+      MONGO_DATABASE_NAME: "" # collection name
+      LOCAL_IPFS_ENABLED: true  # Whether to enable local IPFS node publishing or not.      
+      LOCAL_IPFS_IS_CLUSTER_PEER: true # Weather LOCAL_IPFS_LIST for cluster-peer or node
+      LOCAL_IPFS_LIST: "/ipv4/0.0.0.0/tcp/8888/http,/ipv4/1.1.1.1/tcp/8888/http"  # use your culster-peer OR node `ip` and `port`
+      IPFS_GATEWAY_ADDRESS: "" # Default is: "https://gateway.ipfs.io/ipfs/"
+      PINATA_ENABLED: false  # Whether to upload files to Pinata.cloud or not
       PINATA_API: ''  # Pinata.cloud credentials. Leave empty if you don't need it
       PINATA_SECRET_API: ''  # Pinata.cloud credentials. Leave empty if you don't need it
-      AUTHENTICATE: true # Whether check authentication or not
-
-  ipfsnode:
-    image: ipfs/go-ipfs:master-latest
-    restart: always
-    volumes:
-      - ~/ipfs/ipfs_staging:/export
-      - ~/ipfs/ipfs_data:/data/ipfs
-    healthcheck:
-      interval: 5s
+      PRODUCTION_ENVIRONMENT: false  # Leave "no" if you want testing credentials to work
+      AUTHENTICATE: false # Whether check authentication or not
